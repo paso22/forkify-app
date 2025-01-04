@@ -1,4 +1,4 @@
-import { getResultsForGivenPage, loadRecipe, loadSearchResults, state } from './model';
+import { getResultsForGivenPage, loadRecipe, loadSearchResults, state, updateServings } from './model';
 import recipeView from './view/recipeView';
 
 import 'core-js/stable';
@@ -17,6 +17,7 @@ const controlRecipes = async function() {
     if (!id) return;
 
     recipeView.renderSpinner();
+    resultsView.update(getResultsForGivenPage(state.search.page));
 
     await loadRecipe(id);
     recipeView.render(state.recipe);
@@ -25,6 +26,11 @@ const controlRecipes = async function() {
     console.error(err);
     recipeView.renderError();
   }
+};
+
+const controlServings = function(newServing) {
+  updateServings(newServing);
+  recipeView.update(state.recipe);
 };
 
 const controlSearch = async function() {
@@ -50,6 +56,7 @@ const controlPagination = function(goToPage) {
 
 function init() {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServing(controlServings);
   searchView.addHandlerSearch(controlSearch);
   paginationView.addHandlerPagination(controlPagination);
 }
