@@ -1,4 +1,4 @@
-import { REQUEST_TIMEOUT } from './config';
+import { API_REQUEST_KEY, API_URL, REQUEST_TIMEOUT } from './config';
 
 const timeout = function(s) {
   return new Promise(function(_, reject) {
@@ -8,14 +8,23 @@ const timeout = function(s) {
   });
 };
 
-export const getJSON = async function(url) {
+export const AJAX = async function(url, data = undefined) {
   try {
-    const res = await Promise.race([fetch(url), timeout(REQUEST_TIMEOUT)]);
-    const data = await res.json();
+    const fetchObj = data ?
+      fetch(`${API_URL}?key=${API_REQUEST_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }) :
+      fetch(url);
 
-    if (!res.ok) throw new Error(`${data.message} ${res.status}`);
+    const res = await Promise.race([fetchObj, timeout(REQUEST_TIMEOUT)]);
+    const addedData = await res.json();
 
-    return data;
+    if (!res.ok) throw new Error(`${addedData.message} ${res.status}`);
+    return addedData;
   } catch (err) {
     throw err;
   }
