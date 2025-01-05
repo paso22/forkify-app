@@ -71,7 +71,12 @@ const controlBookmark = function() {
   bookmarkView.render(state.bookmarks);
 };
 
+const controlFetchBookmarks = function() {
+  bookmarkView.render(state.bookmarks);
+}
+
 function init() {
+  bookmarkView.addHandlerFetchBookmarks(controlFetchBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServing(controlServings);
   recipeView.addHandlerBookmark(controlBookmark);

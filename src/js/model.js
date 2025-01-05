@@ -71,13 +71,26 @@ export const updateServings = function(newServing) {
   });
 };
 
+const updateBookmarkStorage = function() {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
 export const addBookmark = function() {
   state.recipe.bookmarked = true;
   state.bookmarks.push(state.recipe);
+  updateBookmarkStorage();
 };
 
 export const removeBookmark = function() {
   state.recipe.bookmarked = false;
   const index = state.bookmarks.findIndex(b => b.id === state.recipe.id);
   state.bookmarks.splice(index, 1);
+  updateBookmarkStorage();
 };
+
+const init = function() {
+  const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  if (bookmarks) state.bookmarks = bookmarks;
+};
+
+init();
